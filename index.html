@@ -3,192 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <title>Christmas 2025 Countdown</title>
-  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(to bottom, #00111a, #00334d);
-      font-family: 'Mountains of Christmas', cursive;
-      color: #fff;
+      min-height: 100vh;
+      background: url('https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=1350&q=80')
+        no-repeat center center/cover;
+      color: white;
+      text-align: center;
       overflow: hidden;
     }
+
     h1 {
       font-size: 3rem;
-      text-align: center;
-      margin: 20px;
-      text-shadow: 0 0 15px #ff0;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
     }
+
     #countdown {
       font-size: 2rem;
-      padding: 15px 25px;
-      background: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 40px;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
 
-    /* Twinkling Lights */
+    /* Flickering Christmas lights at the top */
     .lights {
-      position: fixed;
+      position: absolute;
       top: 0;
       width: 100%;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      z-index: 5;
-    }
-    .light {
-      width: 15px;
-      height: 25px;
-      border-radius: 50%;
-      background: red;
-      animation: blink 1.5s infinite alternate;
-    }
-    .light:nth-child(2n) { background: yellow; animation-delay: .3s; }
-    .light:nth-child(3n) { background: green; animation-delay: .6s; }
-    .light:nth-child(4n) { background: blue; animation-delay: .9s; }
-    @keyframes blink {
-      from { opacity: 0.2; }
-      to { opacity: 1; }
+      height: 80px;
+      background: repeating-linear-gradient(
+        to right,
+        red 0 20px,
+        green 20px 40px,
+        gold 40px 60px,
+        lightblue 60px 80px
+      );
+      animation: glow 2s infinite alternate;
+      box-shadow: 0 0 50px rgba(255,255,255,0.6);
     }
 
-    /* Snowflakes */
+    @keyframes glow {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.5); }
+    }
+
+    /* Snow effect */
     .snowflake {
       position: fixed;
       top: -10px;
-      color: white;
       font-size: 1em;
+      color: #fff;
+      user-select: none;
       animation: fall linear infinite;
-      z-index: 1;
     }
+
     @keyframes fall {
       to {
         transform: translateY(110vh);
       }
     }
-
-    /* Tree */
-    .tree {
-      position: relative;
-      width: 0;
-      height: 0;
-      margin-top: 40px;
-    }
-    .tree-part {
-      width: 0;
-      height: 0;
-      border-left: 80px solid transparent;
-      border-right: 80px solid transparent;
-      border-bottom: 100px solid green;
-      margin: -30px auto;
-    }
-    .tree-part:nth-child(2) {
-      border-left-width: 100px;
-      border-right-width: 100px;
-      border-bottom-width: 120px;
-    }
-    .tree-part:nth-child(3) {
-      border-left-width: 120px;
-      border-right-width: 120px;
-      border-bottom-width: 140px;
-    }
-    .tree-trunk {
-      width: 40px;
-      height: 60px;
-      background: #5c3317;
-      margin: 0 auto;
-    }
-
-    /* Confetti */
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background: red;
-      top: 0;
-      animation: confettiFall linear forwards;
-      z-index: 10;
-    }
-    @keyframes confettiFall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="lights">
-    <div class="light"></div><div class="light"></div><div class="light"></div>
-    <div class="light"></div><div class="light"></div><div class="light"></div>
-    <div class="light"></div><div class="light"></div><div class="light"></div>
-  </div>
-
+  <div class="lights"></div>
   <h1>Countdown to Christmas 2025 🎄</h1>
-  <div id="countdown"></div>
-
-  <div class="tree">
-    <div class="tree-part"></div>
-    <div class="tree-part"></div>
-    <div class="tree-part"></div>
-    <div class="tree-trunk"></div>
-  </div>
+  <div id="countdown">Loading...</div>
 
   <script>
-    const countdownEl = document.getElementById('countdown');
-    const christmasDate = new Date('December 25, 2025 00:00:00').getTime();
+    // Countdown logic
+    const targetDate = new Date("December 25, 2025 00:00:00").getTime();
+    const countdownEl = document.getElementById("countdown");
 
     function updateCountdown() {
       const now = new Date().getTime();
-      const diff = christmasDate - now;
+      const distance = targetDate - now;
 
-      if (diff <= 0) {
-        countdownEl.innerHTML = "🎅 Merry Christmas! 🎁";
-        launchConfetti();
-        clearInterval(timer);
+      if (distance < 0) {
+        countdownEl.innerHTML = "🎉 Merry Christmas 2025! 🎅";
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000*60*60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000*60));
-      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      countdownEl.innerHTML = 
-        ⁠ ${days}d ${hours}h ${mins}m ${secs}s ⁠;
+      countdownEl.innerHTML = `
+        ${days} Days /
+        ${hours} Hours /
+        ${minutes} Minutes /
+        ${seconds} Seconds
+      `;
     }
-    const timer = setInterval(updateCountdown, 1000);
+
+    setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Snowflakes
+    // Snow generation
     function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.textContent = '❄';
-      snowflake.style.left = Math.random() * 100 + 'vw';
-      snowflake.style.fontSize = Math.random() * 15 + 10 + 'px';
-      snowflake.style.animationDuration = Math.random() * 5 + 5 + 's';
+      const snowflake = document.createElement("div");
+      snowflake.classList.add("snowflake");
+      snowflake.textContent = "❄";
+      snowflake.style.left = Math.random() * window.innerWidth + "px";
+      snowflake.style.fontSize = Math.random() * 15 + 10 + "px";
+      snowflake.style.animationDuration = Math.random() * 5 + 5 + "s";
       document.body.appendChild(snowflake);
-      setTimeout(() => snowflake.remove(), 10000);
-    }
-    setInterval(createSnowflake, 200);
 
-    // Confetti
-    function launchConfetti() {
-      for (let i = 0; i < 200; i++) {
-        const confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.backgroundColor = ['red','green','gold','blue'][Math.floor(Math.random()*4)];
-        confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
-        confetti.style.transform = ⁠ rotate(${Math.random()*360}deg) ⁠;
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 5000);
-      }
+      setTimeout(() => {
+        snowflake.remove();
+      }, 10000);
     }
+
+    setInterval(createSnowflake, 200);
   </script>
 </body>
 </html>
